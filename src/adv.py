@@ -40,7 +40,7 @@ room['treasure'].s_to = room['narrow']
 
 # Make a new player object that is currently in the 'outside' room.
 
-player = Player(room['outside'])
+player = Player('Bob', room['outside'])
 
 # Write a loop that:
 #
@@ -54,37 +54,38 @@ player = Player(room['outside'])
 # If the user enters "q", quit the game.
 
 def printNameAndDescription(player):
-    print(player.room.name)
-    print(player.room.description)
-    print("---")
+    print(player.current_room.name)
+    print(player.current_room.description)
 
 printNameAndDescription(player)
 
 while(True):
+    print("---")
     userInput = input("Enter [N] for North, [S] for South, [E] for East, [W] for West, [Q] to quit: ")
+    print("---")
     if userInput == 'Q' or userInput == 'q':
         break
     elif userInput == 'N' or userInput == 'n':
         try:
-            player.room = player.room.n_to
+            player.current_room = player.current_room.n_to
             printNameAndDescription(player)
         except:
             print("Invalid direction pressed. Please try another direction.")
     elif userInput == 'S' or userInput == 's':
         try:
-            player.room = player.room.s_to
+            player.current_room = player.current_room.s_to
             printNameAndDescription(player)
         except:
             print("Invalid direction pressed. Please try another direction.")
     elif userInput == 'W' or userInput == 'w':
         try:
-            player.room = player.room.w_to
+            player.current_room = player.current_room.w_to
             printNameAndDescription(player)
         except:
             print("Invalid direction pressed. Please try another direction.")
     elif userInput == 'E' or userInput == 'e':
         try:
-            player.room = player.room.e_to
+            player.current_room = player.current_room.e_to
             printNameAndDescription(player)
         except:
             print("Invalid direction pressed. Please try another direction.")

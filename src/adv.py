@@ -125,18 +125,17 @@ while(True):
                     player.current_room.items.remove(adv_item[item])
                     player.items.append(adv_item[item])
                     found = True
-                    print(f"Player has taken {item}\n---")
+                    adv_item[item].on_take()
                     break
             if found == False:
                 print("Item isn't in the room. Please try again.\n---")
         elif verb == "drop":
             for player_item in player.items:
                 if item == player_item.name.lower():
-                    print('remove item from player')
                     player.items.remove(adv_item[item])
                     player.current_room.items.append(adv_item[item])
                     found = True
-                    print(f"Player has dropped {item} in {player.current_room.name}\n---")
+                    adv_item[item].on_drop()
                     break
             if found == False:
                 print("Player doesn't have item. Please try again.\n---")

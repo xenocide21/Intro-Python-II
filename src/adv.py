@@ -76,22 +76,20 @@ def printNameAndDescription(player):
     print(player.current_room.name)
     print(player.current_room.description)
     room_items = "--"
-    player_items = "--"
     for item in player.current_room.items:
         room_items += f"{item.name}--"
     print(f"Items in room: {room_items}")
-    for item in player.items:
-        player_items += f"{item.name}--"
-    print(f"Items on player: {player_items}")
 
 while(True):
     printNameAndDescription(player)
     print("---")
-    userInput = input("Move [N]orth\nMove [S]outh\nMove [E]ast\nMove [W]est\n\n[Take <item>] to take item, [Get <item>] to get item, [Drop <item>] to drop item in room, [Q] to quit\nEnter: ")
+    userInput = input("Move [N]orth\nMove [S]outh\nMove [E]ast\nMove [W]est\n\n[Take <item>] to take item\n[Get <item>] to get item\n[Drop <item>] to drop item in room\nSee [I]nventory\n[Q] to quit\nEnter: ")
     print("---")
     userInput = userInput.lower().strip()
     if userInput == 'q':
         break
+    elif userInput == 'i' or userInput == 'inventory':
+        player.inventory()
     elif userInput == 'n':
         try:
             player.current_room = player.current_room.n_to

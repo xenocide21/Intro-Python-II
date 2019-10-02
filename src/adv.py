@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -22,6 +23,16 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+# Declare all items
+
+adv_item = {
+    'axe': Item("Axe", "Capable to be thrown."),
+    'sword': Item("Sword", "Able to slice and dice."),
+    'dagger': Item("Dagger", "Stealthy, yet deadly."),
+    'bow': Item("Bow", "Shoot with precision, needs arrows to work."),
+    'arrows': Item("Arrows", "Ammo for bow. Unlimited."),
+    'potion': Item("Potion", "Drink for health.")
+}
 
 # Link rooms together
 
@@ -33,6 +44,14 @@ room['overlook'].s_to = room['foyer']
 room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
+
+# Link items to rooms
+room['outside'].items.append(adv_item['axe'])
+room['outside'].items.append(adv_item['arrows'])
+room['foyer'].items.append(adv_item['potion'])
+room['foyer'].items.append(adv_item['bow'])
+room['narrow'].items.append(adv_item['dagger'])
+room['treasure'].items.append(adv_item['dagger'])
 
 #
 # Main
@@ -56,38 +75,72 @@ player = Player('Bob', room['outside'])
 def printNameAndDescription(player):
     print(player.current_room.name)
     print(player.current_room.description)
-
-printNameAndDescription(player)
+    room_items = "--"
+    player_items = "--"
+    for item in player.current_room.items:
+        room_items += f"{item.name}--"
+    print(f"Items in room: {room_items}")
+    for item in player.items:
+        player_items += f"{item.name}--"
+    print(f"Items on player: {player_items}")
 
 while(True):
+    printNameAndDescription(player)
     print("---")
-    userInput = input("Enter [N] for North, [S] for South, [E] for East, [W] for West, [Q] to quit: ")
+    userInput = input("Move [N]orth\nMove [S]outh\nMove [E]ast\nMove [W]est\n\n[Take <item>] to take item, [Get <item>] to get item, [Drop <item>] to drop item in room, [Q] to quit\nEnter: ")
     print("---")
-    if userInput == 'Q' or userInput == 'q':
+    userInput = userInput.lower().strip()
+    if userInput == 'q':
         break
-    elif userInput == 'N' or userInput == 'n':
+    elif userInput == 'n':
         try:
             player.current_room = player.current_room.n_to
             printNameAndDescription(player)
         except:
-            print("Invalid direction pressed. Please try another direction.")
-    elif userInput == 'S' or userInput == 's':
+            print("Invalid direction pressed. Please try another direction.\n---")
+    elif userInput == 's':
         try:
             player.current_room = player.current_room.s_to
             printNameAndDescription(player)
         except:
-            print("Invalid direction pressed. Please try another direction.")
-    elif userInput == 'W' or userInput == 'w':
+            print("Invalid direction pressed. Please try another direction.\n---")
+    elif userInput == 'w':
         try:
             player.current_room = player.current_room.w_to
             printNameAndDescription(player)
         except:
-            print("Invalid direction pressed. Please try another direction.")
-    elif userInput == 'E' or userInput == 'e':
+            print("Invalid direction pressed. Please try another direction.\n---")
+    elif userInput == 'e':
         try:
             player.current_room = player.current_room.e_to
             printNameAndDescription(player)
         except:
-            print("Invalid direction pressed. Please try another direction.")
+            print("Invalid direction pressed. Please try another direction.\n---")
+    elif len(userInput.split(" ")) == 2:
+        verb, item = userInput.split(" ")
+        found = False
+        if verb == "take" or verb == "get":
+            for room_item in player.current_room.items:
+                if item == room_item.name.lower():
+                    player.current_room.items.remove(adv_item[item])
+                    player.items.append(adv_item[item])
+                    found = True
+                    print(f"Player has taken {item}\n---")
+                    break
+            if found == False:
+                print("Item isn't in the room. Please try again.\n---")
+        elif verb == "drop":
+            for player_item in player.items:
+                if item == player_item.name.lower():
+                    print('remove item from player')
+                    player.items.remove(adv_item[item])
+                    player.current_room.items.append(adv_item[item])
+                    found = True
+                    print(f"Player has dropped {item} in {player.current_room.name}\n---")
+                    break
+            if found == False:
+                print("Player doesn't have item. Please try again.\n---")
+        else:
+            print("Invalid action. Please try again.\n---")
     else:
-        print("Invalid response. Please try again.")
+        print("Invalid response. Please try again.\n---")
